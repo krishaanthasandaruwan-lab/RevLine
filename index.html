@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>RevLine · Voice racing</title>
+    <link rel="stylesheet" href="game.css">
+</head>
+<body>
+
+
+<dialog id="settings-dialog" aria-labelledby="test-title">
+<section id="test-panel" aria-labelledby="test-title">
+    <div class="settings-header"><h1 id="test-title">Settings</h1><button type="button" class="test-btn" id="close-settings" onclick="closeSettings()" aria-label="Close settings">Done</button></div>
+    <p>Opening Settings pauses the race. Changing the course starts a new run.</p>
+    <fieldset class="course-options"><legend>Driving settings</legend>
+        <label class="switch-line" for="traffic-enabled"><span>Traffic<small>Other vehicles and collisions</small></span><input id="traffic-enabled" type="checkbox" role="switch"></label>
+        <label class="switch-line" for="curves-enabled"><span>Curved roads<small>Bends, cornering and drifting</small></span><input id="curves-enabled" type="checkbox" role="switch"></label>
+        <label class="switch-line" for="race-enabled"><span>Race<small>Three rivals · finish line · local leaderboard</small></span><input id="race-enabled" type="checkbox" role="switch"></label>
+        <label class="reference-choice" for="steering-mode">Steering<select id="steering-mode"><option value="easy">Easy · curves auto, one lane per tap</option><option value="normal" selected>Normal · curves auto, free steering</option><option value="hard">Hard · you steer the curves</option></select></label>
+        <label class="reference-choice" for="difficulty">Local difficulty<select id="difficulty"><option value="easy">Easy</option><option value="normal" selected>Normal</option><option value="hard">Hard</option></select></label>
+        <label class="reference-choice" for="race-distance">Race distance<select id="race-distance"><option value="1000">1 km</option><option value="3000">3 km</option><option value="5000">5 km</option></select></label>
+        <output id="course-label" aria-live="polite">Plain road</output>
+        <small>Steer: A / D · Drift: hold Q / E or the drift buttons. Drift starts above 25 km/h.</small>
+    </fieldset>
+    <div class="input-choice"><button class="test-btn" type="button" onclick="showGameMenu('garage')">Open Garage</button><button class="test-btn" type="button" onclick="showGameMenu('store')">Open free Store</button></div>
+        <!-- Input telemetry and calibration. -->
+        <div id="top-hud">
+            SCORE: <span id="score" class="hud-val">0</span><br>
+            THROTTLE PRESS: <span id="press-pct" class="hud-val">0%</span><br>
+            INPUT BAND: <span id="pitch-hz" style="color:#ffeb3b; font-weight:bold;">0 Hz</span>
+            <div class="slider-row">
+                <label for="sens-slider">Input sensitivity:</label> <span id="sens-val">2.0</span>x<br>
+                <input type="range" id="sens-slider" min="8" max="45" value="20">
+            </div>
+            <div class="slider-row">
+                <label for="gate-slider">Noise gate:</label> <span id="gate-val">0.8</span>%<br>
+                <input type="range" id="gate-slider" min="0" max="10" step="0.1" value="0.8">
+            </div>
+        </div>
+
+    <div class="input-choice" role="group" aria-label="Input source"><button id="use-mic" onclick="toggleMicrophone()" class="test-btn" aria-pressed="false">Microphone</button><button id="use-recording" onclick="toggleReference()" class="test-btn" aria-pressed="false">Recording</button></div>
+    <p>Tap Microphone again to turn it off. Recording plays or pauses the sound test.</p>
+    <label class="reference-choice" for="reference-source">Reference recording
+        <select id="reference-source"><option value="custom">My rev · IMG_3313</option><option value="downshift">Downshift trial · IMG_3314</option><option value="porsche">Porsche Carrera GT</option><option value="upload" disabled hidden>Loaded file</option></select>
+    </label>
+    <video id="reference-video" class="audio-reference" poster="assets/rev-voice-3313-wave.png" src="assets/rev-voice-3313.m4a" controls playsinline preload="metadata" aria-label="IMG_3313 rev recording"></video>
+    <div class="test-actions">
+        <button id="play-reference" onclick="toggleReference()" class="test-btn primary">Play sound test</button>
+        <button id="replay-reference" onclick="playReference(true)" class="test-btn">Replay from start</button>
+        <label class="file-label">Load another video<input id="reference-file" type="file" accept="video/*,audio/*"></label>
+    </div>
+    <div id="test-status" role="status" aria-live="polite">Ready · IMG_3313 recording and custom voice preset loaded. No microphone needed.</div>
+    <div class="settings-grid">
+        <label for="input-profile">Sound profile
+            <select id="input-profile"><option value="engine">Carrera GT engine / V10</option><option value="voice">Voice / standard</option><option value="voice-custom" selected>My rev · IMG_3313</option><option id="personal-voice-option" value="voice-personal" disabled>Your voice · complete setup</option></select>
+        </label>
+        <label id="engine-calibration" for="rpm-scale" hidden>RPM calibration · <output id="rpm-scale-val">12.5</output> RPM/Hz
+            <input id="rpm-scale" type="range" min="6" max="30" step="0.5" value="12.5">
+        </label>
+        <div id="voice-range">Matched voice pitch<strong id="voice-range-val">150–300 Hz</strong></div>
+    </div>
+    <button class="test-btn" id="open-voice-setup" type="button" onclick="voiceSetup.open()">Set up your voice</button>
+    <p id="personal-voice-status">Learn the sound gestures and match the input to your voice. Setup starts a new run.</p>
+    <label class="switch-line" for="voice-blend"><span>Pitch + volume mix<small>Trial · Off = previous control. Switching starts a new run.</small></span><input id="voice-blend" type="checkbox" role="switch" checked></label>
+    <div class="check-row">
+        <label><input type="checkbox" id="loop-reference" checked> Loop test</label>
+        <label><input type="checkbox" id="voice-ai" checked> AI voice pitch</label>
+        <label><input type="checkbox" id="voice-downshift" checked> Voice downshift</label>
+    </div>
+    <output id="voice-ai-status" role="status" aria-live="polite">AI voice pitch is available in Voice mode. Porsche engine detector stays standard.</output>
+    <div class="telemetry" aria-label="Estimated app telemetry">
+        <div><span>EST. RPM</span><output id="test-rpm">1,000</output></div>
+        <div><span>EST. GEAR</span><output id="test-gear">N</output></div>
+        <div><span>EST. KM/H</span><output id="test-speed">0</output></div>
+    </div>
+    <output id="signal-state">Input: none · Waiting for playback</output>
+    <div class="test-actions">
+        <button id="export-test" class="test-btn" disabled>Export run CSV</button>
+    </div>
+    <table id="leaderboard"><caption>Local leaderboard · this course</caption><thead><tr><th scope="col">#</th><th scope="col">Place</th><th scope="col">Time</th><th scope="col">Score</th></tr></thead><tbody id="leaderboard-rows"></tbody></table>
+    <p id="leaderboard-note">Complete a race to save your result on this device.</p>
+    <p><b>Shift timing:</b> Voice cuts work from 7,000 RPM. Below 8,500: Early · 8,500–9,500: Perfect · above 9,500: Late. Holding the 10k marker for more than 3 seconds causes engine failure. Shift, brake or release the throttle to recover before then.</p>
+    <p><b>Driving:</b> a short break in your rev shifts up; one small rev shifts down. When the car slows to the bottom of a gear, it shifts down by itself. Holding a gear at the redline cuts power, and more than 3 seconds at 10k blows the engine. Tap <b>N ↔ D</b> any time for neutral; tap again to drive in a gear that suits the speed. More than 3 seconds of silence selects neutral automatically. RPM and gears are estimates.</p>
+</section>
+</dialog>
+
+<dialog id="voice-setup-dialog" aria-labelledby="voice-setup-title" aria-describedby="voice-setup-copy">
+    <div class="setup-header"><span id="voice-setup-step">Voice setup</span><button class="test-btn" id="voice-setup-close" type="button" onclick="voiceSetup.close()">Later</button></div>
+    <div class="setup-body">
+        <h1 id="voice-setup-title" tabindex="-1">Drive with your voice</h1>
+        <p id="voice-setup-copy">We’ll listen to your rev and fit the controls to your voice. Then practise both gear changes. About a minute.</p>
+        <svg id="voice-setup-guide" viewBox="0 0 360 180" role="img" aria-label="Shift window from 7,000 RPM; perfect timing from 8,500 to 9,500 RPM">
+            <path class="setup-dial" d="M52 145A128 128 0 0 1 308 145"/>
+            <path class="setup-band" d="M255 41A128 128 0 0 1 306 125"/>
+            <path class="setup-perfect" d="M291 81A128 128 0 0 1 305 125"/>
+            <path id="setup-needle" d="M180 145L80 145"/>
+            <circle cx="180" cy="145" r="5" fill="currentColor"/>
+            <text x="36" y="170">0</text><text x="244" y="28">7</text><text x="302" y="170">10</text>
+            <text class="setup-rpm" x="180" y="174" text-anchor="middle">RPM × 1000</text>
+        </svg>
+        <div class="setup-cue" id="voice-setup-cue" hidden><svg viewBox="0 0 240 55" aria-hidden="true"><path id="setup-cue-path"/></svg><strong id="setup-cue-label"></strong></div>
+        <div class="setup-level"><span id="setup-level-label">Microphone starts when you choose Begin setup.</span><div><span id="setup-level-fill"></span></div></div>
+        <progress id="voice-setup-progress" max="1" value="0" aria-label="Listening progress" hidden></progress>
+        <output id="voice-setup-feedback" role="status" aria-live="polite">7–10k: shift window · 8.5–9.5k: perfect timing.</output>
+        <p class="setup-note">Audio stays on this device. Only your voice settings are saved.</p>
+    </div>
+    <div class="setup-actions"><button class="test-btn" id="voice-setup-back" type="button" onclick="voiceSetup.restart()" hidden>Start over</button><button class="test-btn primary" id="voice-setup-action" type="button" onclick="voiceSetup.next()">Begin setup</button></div>
+</dialog>
+
+<div id="game-container">
+    <section id="game-menu" aria-label="RevLine home">
+        <header class="menu-header"><button id="menu-back" class="test-btn" type="button" onclick="setMenuView('home')" hidden>Home</button><h1 id="menu-title" tabindex="-1">RevLine</h1><button class="test-btn" type="button" onclick="openSettings()">Settings</button></header>
+        <section data-menu-view="home">
+            <div class="showroom"><canvas id="home-car-art" width="512" height="160" data-car-color="#1565c0" aria-hidden="true"></canvas><h2 id="home-car-name">Carrera GT</h2><p id="home-engine-name">Original reference</p></div>
+            <div class="mode-choice"><button class="mode-button primary" type="button" onclick="enterDrive(true)"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 21V3m0 1c5-4 9 4 14 0v10c-5 4-9-4-14 0"/><path d="M8 4v10m4-9v10m4-10v10M5 9c5-4 9 4 14 0"/></svg><strong>Race</strong><span id="race-menu-detail">1 km · 3 opponents</span></button><button class="mode-button" type="button" onclick="enterDrive(false)"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m7 3-4 18m14-18 4 18M12 3v4m0 3v4m0 3v4"/></svg><strong>Free drive</strong><span>Your road. Your pace.</span></button></div>
+            <nav class="menu-nav" aria-label="Collection"><button class="test-btn" type="button" onclick="setMenuView('garage')">Garage · <span id="owned-count">1</span> <span id="owned-unit">car</span></button><button class="test-btn" type="button" onclick="setMenuView('store')">Store · all free</button></nav>
+            <p class="menu-help">Rev with your voice. Shift with short sound cues.<br>Voice driving · curves · traffic · drift</p>
+            <button class="test-btn" id="home-voice-setup" type="button" onclick="voiceSetup.open()">Set up your voice</button>
+        </section>
+        <section data-menu-view="store" hidden>
+            <p class="menu-intro">Find your next sound. Every car and part is free in this testing build.</p>
+            <div class="store-selection"><strong id="store-selected"></strong><button class="test-btn" id="store-preview" type="button" onclick="previewGarageSound(true)" aria-pressed="false">Hear car</button><button class="test-btn primary" id="claim-car" type="button" onclick="claimStoreCar()">Add to garage · free</button></div>
+            <output id="store-status" class="menu-status" aria-live="polite">Select a car to hear its source-based engine preview.</output>
+            <div id="store-list" aria-label="Available cars"></div>
+            <p class="menu-help">Engine previews come from the collected references. Some retain the original mix.</p>
+        </section>
+        <section id="garage" data-menu-view="garage" hidden>
+            <div class="showroom garage-showroom"><canvas id="garage-car-art" width="512" height="160" data-car-color="#1565c0" aria-hidden="true"></canvas><h2 id="garage-car-name">Carrera GT</h2><p id="garage-engine-name">Original reference</p></div>
+            <label class="reference-choice" for="shop-car">Your cars<select id="shop-car" onchange="stopGaragePreview();renderGarageAction('car')"></select></label>
+            <button class="test-btn garage-action" id="buy-car" type="button" onclick="equipGarage('car')">Select car</button>
+            <label class="reference-choice" for="shop-engine">Engine sound<select id="shop-engine" onchange="stopGaragePreview();renderGarageAction('engine')"></select></label>
+            <div class="garage-actions"><button class="test-btn" id="preview-engine" type="button" onclick="previewGarageSound()" aria-pressed="false">Preview engine</button><button class="test-btn" id="buy-engine" type="button" onclick="equipGarage('engine')">Fit engine · free</button></div>
+            <label class="reference-choice" for="shop-turbo">Turbo setup<select id="shop-turbo" onchange="renderGarageAction('turbo')"></select></label>
+            <button class="test-btn garage-action" id="buy-turbo" type="button" onclick="equipGarage('turbo')">Fit part · free</button>
+            <p class="menu-help">Street turbo adds acceleration. Engine previews use their source recording. Fitting a car or part prepares a new run.</p>
+            <output id="garage-status" class="menu-status" aria-live="polite">Your selected setup is saved on this device.</output>
+            <button class="test-btn garage-action" type="button" onclick="setMenuView('store')">Get more cars · free</button>
+        </section>
+        <audio id="garage-audio" preload="none"></audio>
+    </section>
+
+        <canvas id="gameCanvas" width="540" height="900"></canvas>
+    <nav id="game-toolbar" aria-label="Game menu">
+        <button id="home-button" class="test-btn" type="button" onclick="showGameMenu()">Menu</button>
+        <button id="settings-button" type="button" class="test-btn" onclick="openSettings()" aria-haspopup="dialog" aria-controls="settings-dialog">Settings</button>
+    </nav>
+    
+    <div id="ui-layer">
+        <div id="race-hud" hidden><strong id="race-position">4 / 4</strong><span id="race-distance-label">0.00 / 1.00 km</span><div id="race-progress-track"><div id="race-progress"></div><i class="rival-dot"></i><i class="rival-dot"></i><i class="rival-dot"></i></div><span id="rival-gaps"></span></div>
+
+        <!-- Top Right: Blue 0-10 Tachometer + Yellow & Red Shift Lights -->
+        <div id="dashboard-cluster">
+            <canvas id="tachoCanvas" width="210" height="195" role="img" aria-label="RPM and speed meter"></canvas>
+            <canvas id="speedoCanvas" width="160" height="160" role="img" aria-label="Estimated speed: 0 kilometers per hour"></canvas>
+        </div>
+
+        <div id="gear-alert" role="status" aria-live="polite" aria-atomic="true">GEAR 2! ▲</div>
+        
+        <!-- Voice feedback and touch driving controls. -->
+        <div id="voice-meter" aria-label="Voice throttle"><span>Voice <output id="voice-level">0%</output></span><div id="voice-track"><div id="voice-fill"></div></div></div>
+        <div id="control-deck" role="group" aria-label="Driving controls">
+            <div class="left-controls">
+                <div class="steer-row">
+                    <button type="button" class="drive-control steer-btn" id="btn-left" onclick="nudgeCar(-1)" aria-label="Steer left" title="Steer left (A / Left Arrow)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+                    <button type="button" class="drive-control steer-btn" id="btn-right" onclick="nudgeCar(1)" aria-label="Steer right" title="Steer right (D / Right Arrow)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+                </div>
+                <div class="drift-row" role="group" aria-label="Drift controls">
+                    <button type="button" class="drive-control drift-btn" id="btn-drift-left" onclick="tapDrift(-1, event)" aria-label="Drift left" aria-pressed="false" title="Hold to drift left (Q)">Drift L</button>
+                    <button type="button" class="drive-control drift-btn" id="btn-drift-right" onclick="tapDrift(1, event)" aria-label="Drift right" aria-pressed="false" title="Hold to drift right (E)">Drift R</button>
+                </div>
+            </div>
+            <div class="right-controls">
+                <div class="neutral-control"><button type="button" id="gear-lcd-circle" class="drive-control" onclick="toggleNeutral()" aria-label="Neutral / drive" aria-pressed="true" title="Neutral / suitable driving gear (N)">N</button><span>N ↔ D</span></div>
+                <button type="button" id="btn-brake" class="drive-control" onclick="car.speedKmh = Math.max(0, car.speedKmh - 3)" title="Brake / stop (Spacebar)">Brake</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlay">
+        <h1>Sound → acceleration</h1>
+        <p>Rev with your voice to drive. Choose microphone or recording, Traffic, Curved roads and Race in Settings. Use N ↔ D for drive and neutral.</p>
+        <button class="action-btn" id="start-btn" onclick="useMicrophone()">USE MICROPHONE</button>
+        <p data-input-status role="status" aria-live="polite" aria-atomic="true">Microphone access is needed for voice driving.</p>
+    </div>
+</div>
+
+<script src="voice-input.js"></script>
+<script src="driving-feedback.js"></script>
+<script src="exhaust-feedback.js"></script>
+<script src="driving-scene.js"></script>
+<script src="garage.js"></script>
+<script src="game-menu.js"></script>
+<script src="game.js"></script>
+<script src="voice-setup.js"></script>
+</body>
+</html>

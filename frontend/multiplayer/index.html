@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- Relative URLs resolve from the project root, like the other pages. -->
+    <base href="../../">
+    <title>RevLine · Multiplayer</title>
+    <link rel="icon" href="data:,">
+    <link rel="preload" href="frontend/shared/fonts/LilitaOne-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="frontend/shared/fonts/Teko-Variable.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="frontend/shared/theme.css">
+    <link rel="stylesheet" href="frontend/multiplayer/mp.css">
+</head>
+<body class="mp-page">
+    <header class="mp-top">
+        <a class="rl-btn rl-btn--dark rl-btn--small mp-back" href="frontend/index.html" aria-label="Back to home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></a>
+        <h1 class="rl-title">Multiplayer</h1>
+        <a class="me-chip" id="me-chip" href="frontend/profile/index.html" aria-label="Your profile"></a>
+    </header>
+    <p class="mp-status" id="mp-status" role="status">Signing in to Game Center…</p>
+
+    <main class="mp-main">
+        <!-- Hub -->
+        <section class="mp-view" id="view-hub">
+            <button type="button" class="mode-card rl-btn rl-btn--green" id="go-online">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+                <strong>Online race</strong><span id="online-detail">Race players who are online now</span></button>
+            <div class="mode-card rl-panel friends-card">
+                <div class="friends-head">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M15 15c3 0 6 1.8 6 5"/></svg>
+                    <div><strong>Race with friends</strong><span>Up to 4 players. You host: choose the race, share the link.</span></div>
+                </div>
+                <button type="button" class="rl-btn rl-btn--yellow" id="create-lobby">Create a lobby</button>
+                <form class="join-row" id="join-form">
+                    <label class="rl-sr-only" for="join-code">Lobby code</label>
+                    <input id="join-code" inputmode="numeric" autocomplete="off" maxlength="7" placeholder="Code (6 digits)" pattern="[0-9 ]*">
+                    <button type="submit" class="rl-btn rl-btn--dark rl-btn--small">Join</button>
+                </form>
+            </div>
+            <div class="hub-row">
+                <button type="button" class="rl-btn rl-btn--orange" id="go-friends">Friends</button>
+                <button type="button" class="rl-btn rl-btn--dark" id="go-board">Leaderboard</button>
+            </div>
+        </section>
+
+        <!-- Searching for online players -->
+        <section class="mp-view" id="view-search" hidden>
+            <div class="search-card rl-panel">
+                <div class="radar" aria-hidden="true"><i></i><i></i><i></i></div>
+                <h2>Searching for online players…</h2>
+                <p id="search-detail">Races start with 2 to 4 players. The track is chosen automatically.</p>
+                <button type="button" class="rl-btn rl-btn--dark" id="cancel-search">Cancel</button>
+            </div>
+        </section>
+
+        <!-- Lobby -->
+        <section class="mp-view" id="view-lobby" hidden>
+            <div class="lobby-head rl-panel" id="lobby-head"></div>
+            <ul class="members" id="members" aria-label="Players"></ul>
+            <div class="settings rl-panel" id="lobby-settings"></div>
+            <div class="last-results rl-panel" id="last-results" hidden></div>
+            <div class="lobby-actions" id="lobby-actions"></div>
+        </section>
+
+        <!-- Friends -->
+        <section class="mp-view" id="view-friends" hidden>
+            <div class="list-head"><h2>Friends</h2><button type="button" class="rl-btn rl-btn--yellow rl-btn--small" id="add-friend">Add friend</button></div>
+            <p class="mp-hint" id="friends-hint"></p>
+            <ul class="people" id="friends"></ul>
+            <button type="button" class="rl-btn rl-btn--dark rl-btn--small back-hub">Back</button>
+        </section>
+
+        <!-- Leaderboard -->
+        <section class="mp-view" id="view-board" hidden>
+            <div class="list-head"><h2>Leaderboard</h2><button type="button" class="rl-btn rl-btn--dark rl-btn--small" id="open-gc" hidden>Game Center</button></div>
+            <div class="tabs" role="tablist" id="board-tabs">
+                <button type="button" role="tab" data-board="wins" aria-selected="true">Wins</button>
+                <button type="button" role="tab" data-board="stars" aria-selected="false">Stars</button>
+                <button type="button" role="tab" data-board="points" aria-selected="false">Points</button>
+            </div>
+            <div class="tabs scope" role="tablist" id="board-scope">
+                <button type="button" role="tab" data-scope="global" aria-selected="true">Global</button>
+                <button type="button" role="tab" data-scope="friends" aria-selected="false">Friends</button>
+            </div>
+            <ol class="board" id="board"></ol>
+            <button type="button" class="rl-btn rl-btn--dark rl-btn--small back-hub">Back</button>
+        </section>
+    </main>
+    <output class="mp-toast" id="mp-toast" hidden></output>
+
+    <script src="frontend/shared/no-zoom.js"></script>
+    <script src="garage.js"></script>
+    <script src="frontend/garage/parts-catalog.js"></script>
+    <script src="frontend/shared/tuning-store.js"></script>
+    <script src="frontend/shared/economy.js"></script>
+    <script src="frontend/career/career-data.js"></script>
+    <script src="frontend/shared/career-store.js"></script>
+    <script src="frontend/shared/profile-store.js"></script>
+    <script src="frontend/shared/net.js"></script>
+    <script src="frontend/shared/lobby.js"></script>
+    <script src="frontend/multiplayer/mp-ui.js"></script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+/* Home hub. Tokens come from frontend/shared/theme.css. */
+body.home-page { min-height: 100dvh; overflow-x: hidden; }
+#home-bg { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh; display: block; z-index: 0; }
+.home-shade {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(8, 14, 28, .88) 0%, rgba(8, 14, 28, .45) 45%, rgba(8, 14, 28, .2) 70%, rgba(8, 14, 28, .6) 100%),
+        linear-gradient(180deg, rgba(8, 14, 28, .2), rgba(8, 14, 28, .55));
+}
+.home {
+    position: relative; z-index: 2;
+    display: grid; gap: 16px;
+    max-width: 1180px; margin: 0 auto;
+    padding: calc(18px + var(--rl-safe-top)) 16px calc(24px + var(--rl-safe-bottom));
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "wallet" "brand" "modes" "car" "foot";
+}
+@media (min-width: 900px) {
+    .home { min-height: 100dvh; align-content: center; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); column-gap: 40px;
+        grid-template-areas: "wallet wallet" "brand car" "modes car" "foot foot"; }
+    .home-car { align-self: center; }
+}
+.home-brand { grid-area: brand; } .home-car { grid-area: car; } .home-modes { grid-area: modes; } .home-setup { grid-area: setup; } .home-foot { grid-area: foot; } .home-wallet { grid-area: wallet; margin-bottom: -10px; }
+
+/* ---------- Logo ---------- */
+.home-brand { display: flex; flex-direction: column; align-items: flex-start; }
+.logo {
+    margin: 0; display: flex; gap: .06em;
+    font: 400 clamp(64px, 13vw, 116px)/.9 var(--rl-font-display);
+    transform: skewX(-8deg) rotate(-3deg); transform-origin: left bottom;
+    animation: logo-in .7s cubic-bezier(.2, 1.4, .4, 1) both;
+}
+.logo span { color: var(--rl-yellow); -webkit-text-stroke: 5px var(--rl-ink); paint-order: stroke fill; text-shadow: 0 7px 0 var(--rl-ink), 0 14px 26px rgba(0, 0, 0, .45); }
+.logo span + span { color: #fff; }
+@keyframes logo-in { from { transform: skewX(-8deg) rotate(-3deg) translateY(-30px) scale(.8); opacity: 0; } }
+.logo-ribbon {
+    margin: 10px 0 0 10px; padding: 6px 18px 4px;
+    background: var(--rl-red); border: 3px solid var(--rl-ink); border-radius: 8px;
+    color: #fff; font: italic 600 24px/1 var(--rl-font-hud); letter-spacing: .22em; text-transform: uppercase;
+    transform: skewX(-12deg) rotate(-3deg); box-shadow: 0 5px 0 var(--rl-ink);
+}
+
+/* ---------- Car card ---------- */
+.home-car { display: grid; grid-template-columns: 132px minmax(0, 1fr); align-items: center; gap: 10px; padding: 12px; }
+#home-turntable { width: 100%; aspect-ratio: 1; display: block; }
+.home-car-info { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; text-align: left; }
+.home-car-info h2 { font-size: 30px; }
+.home-build { justify-content: flex-start; }
+@media (min-width: 900px) {
+    .home-car { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 14px; }
+    #home-turntable { aspect-ratio: 1.25; }
+    .home-car-info { align-items: center; gap: 8px; text-align: center; }
+    .home-car-info h2 { font-size: 38px; }
+    .home-build { justify-content: center; }
+}
+.home-car-info .rl-label { font-size: 20px; }
+.home-car-info h2 { margin: 0; font-family: var(--rl-font-display); line-height: 1; letter-spacing: .02em; text-shadow: 0 4px 0 var(--rl-ink); }
+.home-car-engine { margin: 0; color: var(--rl-muted); font-size: 14px; }
+.home-build { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 2px 0 6px; padding: 0; list-style: none; }
+.home-build li { padding: 4px 10px; border-radius: 999px; background: rgba(255, 138, 31, .14); border: 1.5px solid rgba(255, 138, 31, .55); color: #ffc08a; font-size: 12.5px; font-weight: 600; }
+
+/* ---------- Mode buttons ---------- */
+.home-modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; }
+.mode {
+    display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; align-items: center; justify-items: start;
+    column-gap: 12px; padding: 14px 16px; min-height: 76px; text-align: left; border-radius: 18px;
+}
+.mode svg { grid-row: span 2; width: 34px; height: 34px; }
+.mode strong { font: 26px/1 var(--rl-font-display); }
+.mode span { font: 600 13px/1.3 var(--rl-font-body); text-shadow: none; opacity: .85; }
+.mode-race { grid-column: span 2; min-height: 96px; }
+.mode-wide { grid-column: span 2; }
+.mode-race strong { font-size: 40px; }
+.mode-race span { font-size: 14px; }
+.mode-race svg { width: 46px; height: 46px; }
+
+/* ---------- Race setup ---------- */
+.home-setup { padding: 14px 16px 12px; }
+.home-setup h2 { margin: 0 0 8px; font: 20px var(--rl-font-display); color: var(--rl-yellow); }
+.setup-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 6px 0; }
+.setup-row .rl-label { min-width: 74px; font-size: 19px; }
+.setup-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.setup-help { margin: 0 0 4px; color: var(--rl-muted); font-size: 12.5px; line-height: 1.45; }
+.setup-status { display: block; min-height: 1.4em; margin-top: 4px; color: var(--rl-green); font-size: 12.5px; }
+
+.home-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; color: var(--rl-muted); font-size: 12.5px; }
+.home-foot p { margin: 0; }
+.home-foot a { color: var(--rl-cyan); }
+
+/* Wallet: coins (backend garage), gems and stars (career store). */
+.home-wallet { display: flex; justify-content: flex-end; gap: 6px; }
+.home-wallet > span {
+    display: inline-flex; align-items: center; gap: 5px; min-height: 34px; padding: 3px 10px 3px 5px;
+    border: 2.5px solid var(--rl-ink); border-radius: 999px; background: rgba(8, 14, 26, .82); color: #fff;
+    font: italic 600 20px/1 var(--rl-font-hud); font-variant-numeric: tabular-nums;
+}
+.home-wallet i { width: 20px; height: 20px; flex: none; }
+.g-coin i { border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff3a8, #ffc928 55%, #c98a00); border: 2px solid var(--rl-ink); }
+.g-gem i { background: linear-gradient(135deg, #b8f3ff, #38e1ff 45%, #2f6fe0); clip-path: polygon(50% 0, 100% 35%, 50% 100%, 0 35%); }
+.g-star i { background: var(--rl-yellow); clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+
+/* Settings window (race setup moved off the home screen). */
+.home-gear {
+    display: grid; place-items: center; width: 40px; height: 40px; padding: 0; cursor: pointer;
+    border: 2.5px solid var(--rl-ink); border-radius: 50%; background: rgba(8, 14, 26, .82); color: #fff;
+}
+.home-gear svg { width: 22px; height: 22px; }
+.home-dialog {
+    width: min(460px, calc(100vw - 20px)); max-height: calc(100dvh - 24px); padding: 0;
+    border: 3px solid var(--rl-ink); border-radius: var(--rl-radius-l); background: var(--rl-panel-solid); color: var(--rl-text);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .6);
+}
+.home-dialog::backdrop { background: rgba(4, 8, 16, .6); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+.home-dialog .home-setup { padding: 16px 16px 14px; margin: 0; }
+.home-dialog .home-setup > .setup-help { margin: -2px 0 10px; }
+.setup-done { display: flex; justify-content: flex-end; margin-top: 10px; }
+.creator-switch { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--rl-muted); cursor: pointer; }
+.creator-switch input { width: 22px; height: 22px; accent-color: var(--rl-yellow); flex: none; }
+.home-me {
+    display: inline-flex; align-items: center; gap: 6px; min-width: 0; max-width: 40vw; margin-right: auto; padding: 2px 10px 2px 2px;
+    border: 2.5px solid var(--rl-ink); border-radius: 999px; background: rgba(8, 14, 26, .82); color: #fff; text-decoration: none; font-weight: 700; font-size: 13px;
+}
+.home-me span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Small phones: mode tiles keep their titles on one line. */
+@media (max-width: 380px) {
+    .home-modes { gap: 12px 10px; }
+    .mode { padding: 12px 10px; column-gap: 8px; }
+    .mode strong { font-size: clamp(19px, 6.2vw, 24px); }
+    .mode svg { width: 26px; height: 26px; }
+    .mode-race strong { font-size: 34px; }
+}

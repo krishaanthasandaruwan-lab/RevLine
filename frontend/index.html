@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- Relative URLs resolve from the project root, like the race and garage pages. -->
+    <base href="../">
+    <title>RevLine · Voice Racing</title>
+    <link rel="icon" href="data:,">
+    <link rel="preload" href="frontend/shared/fonts/LilitaOne-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="frontend/shared/fonts/Teko-Variable.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="frontend/shared/theme.css">
+    <link rel="stylesheet" href="frontend/home/home.css">
+</head>
+<body class="home-page">
+    <canvas id="home-bg" aria-hidden="true"></canvas>
+    <div class="home-shade" aria-hidden="true"></div>
+
+    <main class="home">
+        <div class="home-wallet" aria-label="Your wallet">
+            <a class="home-me" id="home-me" href="frontend/profile/index.html" aria-label="Your profile"></a>
+            <span class="g-coin" title="Coins"><i aria-hidden="true"></i><b id="home-coins">0</b><span class="rl-sr-only">coins</span></span>
+            <span class="g-gem" title="Gems"><i aria-hidden="true"></i><b id="home-gems">0</b><span class="rl-sr-only">gems</span></span>
+            <span class="g-star" title="Stars"><i aria-hidden="true"></i><b id="home-stars">0</b><span class="rl-sr-only">stars</span></span>
+            <button type="button" class="home-gear" id="open-settings" aria-label="Settings" aria-haspopup="dialog">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+            </button>
+        </div>
+        <header class="home-brand">
+            <h1 class="logo" aria-label="RevLine"><span>REV</span><span>LINE</span></h1>
+            <p class="logo-ribbon">Voice racing</p>
+        </header>
+
+        <section class="home-car rl-panel" aria-labelledby="home-car-name">
+            <canvas id="home-turntable" aria-hidden="true"></canvas>
+            <div class="home-car-info">
+                <p class="rl-label">Your car</p>
+                <h2 id="home-car-name">Carrera GT</h2>
+                <p id="home-car-engine" class="home-car-engine"></p>
+                <ul id="home-build" class="home-build" aria-label="Sound build"></ul>
+                <a class="rl-btn rl-btn--orange rl-btn--small" href="frontend/garage/index.html">Tune the sound</a>
+            </div>
+        </section>
+
+        <nav class="home-modes" aria-label="Play">
+            <a class="mode rl-btn rl-btn--yellow mode-race" href="frontend/career/index.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.3l-5.2 2.8 1-5.8L3.5 9.2l5.9-.8z"/></svg>
+                <strong>Career</strong><span id="career-detail">Region 1 · Round 1</span></a>
+            <a class="mode rl-btn rl-btn--green" href="frontend/race/index.html?mode=race">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 21V3m0 1c5-4 9 4 14 0v10c-5 4-9-4-14 0"/><path d="M8 4v10m4-9v10m4-10v10M5 9c5-4 9 4 14 0"/></svg>
+                <strong>Quick race</strong><span id="race-detail">1 km · 3 rivals</span></a>
+            <a class="mode rl-btn" href="frontend/race/index.html?mode=free">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m7 3-4 18m14-18 4 18M12 3v4m0 3v4m0 3v4"/></svg>
+                <strong>Free drive</strong><span>Your road. Your pace.</span></a>
+            <a class="mode rl-btn rl-btn--purple" href="frontend/multiplayer/index.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M15 15c3 0 6 1.8 6 5"/></svg>
+                <strong>Multiplayer</strong><span>Friends &amp; online · up to 4</span></a>
+            <a class="mode rl-btn rl-btn--orange" href="frontend/garage/index.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M3 14h10a3 3 0 0 0 3-3V8"/><rect x="14" y="4" width="5" height="4" rx="1.5"/><circle cx="19" cy="15" r="2"/><circle cx="21" cy="19" r="1.3"/></svg>
+                <strong>Garage</strong><span id="garage-detail">Exhaust · turbo · intake</span></a>
+        </nav>
+
+
+        <footer class="home-foot">
+            <p>Rev with your voice to accelerate · a short break shifts up · one small rev shifts down · win races to earn coins</p>
+            <a href="index.html">Classic test UI</a>
+        </footer>
+    </main>
+
+    <dialog id="home-settings" class="home-dialog" aria-labelledby="setup-title">
+        <form method="dialog" class="home-setup">
+            <h2 id="setup-title">Settings</h2>
+            <p class="setup-help">Quick race and Free drive use these. Career rounds set their own road.</p>
+            <div class="setup-row"><span class="rl-label" id="distance-label">Distance</span>
+                <div class="setup-chips" role="group" aria-labelledby="distance-label" data-setting="distance">
+                    <button type="button" class="rl-chip" data-value="1000">1 km</button><button type="button" class="rl-chip" data-value="3000">3 km</button><button type="button" class="rl-chip" data-value="5000">5 km</button>
+                </div></div>
+            <div class="setup-row"><span class="rl-label" id="difficulty-label">Rivals</span>
+                <div class="setup-chips" role="group" aria-labelledby="difficulty-label" data-setting="difficulty">
+                    <button type="button" class="rl-chip" data-value="easy">Easy</button><button type="button" class="rl-chip" data-value="normal">Normal</button><button type="button" class="rl-chip" data-value="hard">Hard</button>
+                </div></div>
+            <div class="setup-row"><span class="rl-label" id="control-label">Controls</span>
+                <div class="setup-chips" role="group" aria-labelledby="control-label" id="control-chips">
+                    <button type="button" class="rl-chip" data-control="voice">Voice</button><button type="button" class="rl-chip" data-control="manual">Manual</button>
+                </div></div>
+            <p id="control-help" class="setup-help"></p>
+            <div class="setup-row"><span class="rl-label" id="steering-label">Steering</span>
+                <div class="setup-chips" role="group" aria-labelledby="steering-label" data-setting="steering">
+                    <button type="button" class="rl-chip" data-value="easy">Easy</button><button type="button" class="rl-chip" data-value="normal">Normal</button><button type="button" class="rl-chip" data-value="hard">Hard</button>
+                </div></div>
+            <p id="steering-help" class="setup-help"></p>
+            <div class="setup-row"><span class="rl-label" id="road-label">Road</span>
+                <div class="setup-chips" role="group" aria-labelledby="road-label">
+                    <button type="button" class="rl-chip" data-toggle="curves">Curves</button><button type="button" class="rl-chip" data-toggle="traffic">Traffic</button>
+                </div></div>
+            <div class="setup-row creator-row"><span class="rl-label" id="creator-label">Creator</span>
+                <label class="creator-switch"><input type="checkbox" id="creator-mode" role="switch" aria-labelledby="creator-label"><span>Unlock all rounds (for building and testing maps)</span></label></div>
+            <output id="setup-status" class="setup-status" aria-live="polite"></output>
+            <div class="setup-done"><button class="rl-btn rl-btn--yellow" value="close">Done</button></div>
+        </form>
+    </dialog>
+
+    <script src="frontend/shared/no-zoom.js"></script>
+    <script src="driving-scene.js"></script>
+    <script src="garage.js"></script>
+    <script src="frontend/garage/parts-catalog.js"></script>
+    <script src="frontend/shared/tuning-store.js"></script>
+    <script src="frontend/shared/economy.js"></script>
+    <script src="frontend/career/career-data.js"></script>
+    <script src="frontend/shared/career-store.js"></script>
+    <script src="frontend/shared/profile-store.js"></script>
+    <script src="frontend/shared/car-art.js"></script>
+    <script src="frontend/race/track-renderer.js"></script>
+    <script src="frontend/home/home.js"></script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- Relative URLs resolve from the project root, like the other pages. -->
+    <base href="../../">
+    <title>RevLine · Career</title>
+    <link rel="icon" href="data:,">
+    <link rel="preload" href="frontend/shared/fonts/LilitaOne-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="frontend/shared/fonts/Teko-Variable.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="frontend/shared/theme.css">
+    <link rel="stylesheet" href="frontend/career/career.css">
+</head>
+<body class="career-page">
+    <!-- Shared star shape: <svg><use href="#star"/></svg> -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <symbol id="star" viewBox="0 0 24 24"><path d="M12 1.8l2.95 6.2 6.8.8-5 4.7 1.3 6.7L12 16.9l-6.05 3.3 1.3-6.7-5-4.7 6.8-.8z"/></symbol>
+        <symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10.5" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" fill="none"/></symbol>
+    </svg>
+
+    <header class="c-top">
+        <a class="rl-btn rl-btn--dark rl-btn--small c-home" href="frontend/index.html" aria-label="Back to home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></a>
+        <div class="wallet" aria-label="Your wallet">
+            <span class="wallet-item" title="Coins"><i class="coin" aria-hidden="true"></i><b id="w-coins">0</b><span class="rl-sr-only">coins</span></span>
+            <button type="button" class="wallet-item gems" id="w-gems-button" title="Gems"><i class="gem" aria-hidden="true"></i><b id="w-gems">0</b><span class="rl-sr-only">gems, open gem store</span></button>
+            <span class="wallet-item" title="Stars"><svg class="star-icon" aria-hidden="true"><use href="#star"/></svg><b id="w-stars">0</b><span class="rl-sr-only">stars</span></span>
+        </div>
+    </header>
+
+    <section class="region-head" aria-live="polite">
+        <button type="button" class="region-arrow" id="region-down" aria-label="Previous region">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="region-title">
+            <p class="region-number" id="region-number">Region 1 / 20</p>
+            <h1 id="region-name">Green Valley</h1>
+            <div class="region-progress"><svg class="star-icon" aria-hidden="true"><use href="#star"/></svg><span id="region-stars">0 / 60</span><i><b id="region-bar"></b></i></div>
+            <p class="creator-badge" id="creator-badge" hidden>Creator mode · all rounds open</p>
+        </div>
+        <button type="button" class="region-arrow" id="region-up" aria-label="Next region">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
+    </section>
+
+    <main class="board" id="board">
+        <canvas class="board-art" id="board-art" aria-hidden="true"></canvas>
+        <svg class="board-road" id="board-road" aria-hidden="true"></svg>
+        <div class="board-nodes" id="board-nodes"></div>
+        <div class="region-lock" id="region-lock" hidden>
+            <div class="lock-badge" aria-hidden="true"><svg><use href="#lock"/></svg></div>
+            <h2 id="lock-title">Coming in a future update</h2>
+            <p id="lock-text"></p>
+        </div>
+    </main>
+
+    <dialog id="map-sheet" class="sheet" aria-labelledby="sheet-title">
+        <form method="dialog" class="sheet-body">
+            <div class="sheet-art" id="sheet-art" aria-hidden="true"><canvas id="sheet-canvas"></canvas><span class="sheet-badge" id="sheet-badge"></span></div>
+            <p class="rl-label" id="sheet-kicker">Round 1</p>
+            <h2 id="sheet-title" class="rl-title">Starting Grid</h2>
+            <div class="sheet-stars" id="sheet-stars" aria-hidden="true"></div>
+            <ul class="sheet-facts" id="sheet-facts"></ul>
+            <p class="sheet-class" id="sheet-class"></p>
+            <div class="sheet-row"><span class="rl-label" id="diff-label">Difficulty</span>
+                <div class="setup-chips" role="group" aria-labelledby="diff-label" id="sheet-difficulty">
+                    <button type="button" class="rl-chip" data-value="easy">Easy · 1★</button><button type="button" class="rl-chip" data-value="normal">Normal · 2★</button><button type="button" class="rl-chip" data-value="hard">Hard · 3★</button>
+                </div></div>
+            <p class="sheet-rules" id="sheet-rules"></p>
+            <p class="sheet-best" id="sheet-best"></p>
+            <div class="sheet-actions">
+                <button class="rl-btn rl-btn--dark rl-btn--small" value="close">Close</button>
+                <a class="rl-btn rl-btn--yellow" id="sheet-race" href="#">Race</a>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="gem-sheet" class="sheet" aria-labelledby="gem-title">
+        <form method="dialog" class="sheet-body">
+            <h2 id="gem-title" class="rl-title">Gem store</h2>
+            <p class="sheet-rules">Earn gems with your first 3★ on a round (3 gems) and by finishing a region (20 gems). Spend them on special meter skins in the Garage.</p>
+            <ul class="gem-packs" id="gem-packs"></ul>
+            <p class="sheet-best">Buying gems is coming in a future update. There are no payments in this build.</p>
+            <div class="sheet-actions"><button class="rl-btn rl-btn--yellow" value="close">OK</button></div>
+        </form>
+    </dialog>
+
+    <script src="frontend/shared/no-zoom.js"></script>
+    <script src="garage.js"></script>
+    <script src="frontend/garage/parts-catalog.js"></script>
+    <script src="frontend/shared/tuning-store.js"></script>
+    <script src="frontend/shared/economy.js"></script>
+    <script src="frontend/career/career-data.js"></script>
+    <script src="frontend/shared/career-store.js"></script>
+    <script src="frontend/shared/car-art.js"></script>
+    <script src="frontend/career/region-art.js"></script>
+    <script src="frontend/career/career-ui.js"></script>
+</body>
+</html>

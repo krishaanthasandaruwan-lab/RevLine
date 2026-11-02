@@ -1,0 +1,25 @@
+/* Profile page. Tokens come from frontend/shared/theme.css. */
+body.profile-page { min-height: 100dvh; background: radial-gradient(circle at 50% -10%, #1d3566, var(--rl-night) 60%); }
+.pf-top { display: flex; align-items: center; gap: 10px; padding: calc(10px + var(--rl-safe-top)) 14px 6px; max-width: 560px; margin: 0 auto; }
+.pf-top .rl-title { margin: 0; font-size: clamp(26px, 7vw, 36px); }
+.pf-back { width: 44px; padding: 0; justify-content: center; }
+.pf-main { display: grid; gap: 12px; max-width: 560px; margin: 0 auto; padding: 4px 14px calc(24px + var(--rl-safe-bottom)); }
+.pf-card { padding: 16px; display: grid; gap: 12px; }
+.pf-card h2 { margin: 0; font: 22px var(--rl-font-display); color: var(--rl-yellow); }
+.pf-photo { display: grid; place-items: center; }
+.pf-photo .rl-avatar { border-width: 4px; box-shadow: 0 6px 0 var(--rl-ink); }
+.pf-photo-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.pf-photo-actions label { cursor: pointer; }
+.pf-field { display: grid; gap: 6px; }
+.pf-field small { color: var(--rl-muted); font: 13px var(--rl-font-body); letter-spacing: 0; text-transform: none; }
+.pf-field input, .pf-field select, .pf-field textarea {
+    width: 100%; min-height: 46px; padding: 10px 12px; border: 2.5px solid var(--rl-ink); border-radius: 14px;
+    background: #0d1626; color: #fff; font: 600 16px var(--rl-font-body); resize: vertical;
+}
+.pf-status { min-height: 1.3em; color: var(--rl-green); font-size: 13px; }
+.pf-status[data-error="true"] { color: #ffb38a; }
+.pf-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; }
+.pf-stats div { padding: 8px 10px; border-radius: 12px; background: rgba(255, 255, 255, .06); }
+.pf-stats dt { color: var(--rl-muted); font-size: 12px; }
+.pf-stats dd { margin: 2px 0 0; font: italic 600 22px/1 var(--rl-font-hud); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pf-note { margin: 0; color: var(--rl-muted); font-size: 13px; }

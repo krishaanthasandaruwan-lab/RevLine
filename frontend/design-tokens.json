@@ -1,0 +1,41 @@
+{
+  "name": "RevLine frontend",
+  "version": 1,
+  "style": "Cartoon top-down racing. Thick ink outlines, glossy highlights, yellow italic HUD labels.",
+  "source": "frontend/shared/theme.css is canonical; this file mirrors it for tools and future backends.",
+  "fonts": {
+    "display": { "family": "Lilita One", "file": "frontend/shared/fonts/LilitaOne-Regular.ttf", "license": "SIL OFL 1.1", "use": "Titles, buttons, logo, popups" },
+    "hud": { "family": "Teko", "file": "frontend/shared/fonts/Teko-Variable.ttf", "weights": "300-700", "license": "SIL OFL 1.1", "use": "HUD labels and numbers (italic 600)" },
+    "body": { "family": "Segoe UI, Noto Sans Sinhala, system-ui", "use": "Paragraphs, Sinhala text, settings" },
+    "data": { "family": "Courier New, monospace", "use": "Raw telemetry inside Settings" }
+  },
+  "colors": {
+    "ink": "#0f1724",
+    "night": "#0a1120",
+    "panel": "rgba(10,17,30,0.80)",
+    "panelSolid": "#15233c",
+    "text": "#f8f9fc",
+    "muted": "#a9b6ca",
+    "yellow": "#ffc928",
+    "orange": "#ff8a1f",
+    "red": "#ff3b47",
+    "blue": "#2f8cff",
+    "cyan": "#38e1ff",
+    "green": "#00e676",
+    "purple": "#b07cff",
+    "grass": "#4fae3c",
+    "grassDark": "#3f9631",
+    "asphalt": "#3b3f47",
+    "sand": "#ecd096",
+    "curb": "#e8372f",
+    "gradeEarly": "#ffd54a",
+    "gradePerfect": "#00e676",
+    "gradeLate": "#ff5a5a"
+  },
+  "radius": { "small": "10px", "default": "16px", "large": "24px" },
+  "outline": "3px solid ink",
+  "buttonPressDepth": "5px",
+  "minimumTouchTarget": "44px",
+  "carSprite": { "width": 46, "height": 86, "note": "Matches the backend collision box. Cars face up (-y)." },
+  "stage": { "worldWidth": 540, "worldHeight": 900, "maxStageWidth": "560px", "fit": "width, car anchored at 70% height" }
+}

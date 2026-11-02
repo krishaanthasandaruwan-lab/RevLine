@@ -1,0 +1,15 @@
+{
+  "status": "frozen",
+  "reason": "User-authorized microphone startup repair and native PCM fallback for missing WebKit capture API on Mac. Recognition, calibration, direction guards, presets and AI assets remain byte-for-byte unchanged.",
+  "previous_source_checkpoint": ".checkpoints/before-native-microphone-fallback-2026-10-27.tar.gz",
+  "pre_extraction_checkpoint": ".checkpoints/before-voice-module-2026-10-25.tar.gz",
+  "files": {
+    "voice-input.js": "3002c94824a27d8b596c52fdd52dc5586412b2c65eda93899ab383293088c44a",
+    "assets/voice-pitch/CREPE-LICENSE.txt": "72b2e8b7b1f8f21b667eb241275d4b57cb504d17c0fc624421ec306ef4edc4ac",
+    "assets/voice-pitch/MODEL_CARD.md": "02a99eaf77ff6ff77febe7a00d3560a3adc56889ca94aa2b4363e332ee54c75b",
+    "assets/voice-pitch/model.json": "ab36439c24c6ff7b9592b2d2cd24eccfe6bda348191d527cb2042988e4b40a50",
+    "assets/voice-pitch/provenance.json": "caddf2e39832890f707dc7932c177decf76630555262a3980400743ace735400",
+    "assets/voice-pitch/weights.bin": "0a1e492a58e22c2ad73ea0871123261317ba2e3002e2935b07f83a0296245c92",
+    "assets/vendor/tf-4.22.0.min.js": "300dfae273d20b4046f46a06d735688f03675a807561e9bcb5f664eb2f3d2831"
+  }
+}

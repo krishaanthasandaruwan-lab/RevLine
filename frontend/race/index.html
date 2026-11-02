@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- Every relative URL resolves from the project root, so the unchanged backend finds its assets. -->
+    <base href="../../">
+    <title>RevLine · Race</title>
+    <link rel="icon" href="data:,">
+    <link rel="preload" href="frontend/shared/fonts/LilitaOne-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="frontend/shared/fonts/Teko-Variable.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="frontend/shared/theme.css">
+    <link rel="stylesheet" href="frontend/race/race.css">
+</head>
+<body class="race-page" data-race-state="lobby">
+
+<dialog id="settings-dialog" aria-labelledby="test-title">
+<section id="test-panel" aria-labelledby="test-title">
+    <header class="settings-header">
+        <h1 id="test-title" class="rl-title">Paused</h1>
+        <div class="settings-header-actions">
+            <a class="rl-btn rl-btn--orange rl-btn--small" href="frontend/garage/index.html">Garage</a>
+            <a class="rl-btn rl-btn--dark rl-btn--small" href="frontend/index.html">Home</a>
+            <button type="button" class="rl-btn rl-btn--green rl-btn--small" id="close-settings" onclick="closeSettings()" aria-label="Resume race" autofocus>Resume</button>
+        </div>
+    </header>
+    <div class="settings-tabs" role="tablist" aria-label="Settings sections">
+        <button type="button" role="tab" id="tab-course" aria-controls="panel-course" aria-selected="true">Course</button>
+        <button type="button" role="tab" id="tab-input" aria-controls="panel-input" aria-selected="false" tabindex="-1">Sound input</button>
+        <button type="button" role="tab" id="tab-tuning" aria-controls="panel-tuning" aria-selected="false" tabindex="-1">Calibration</button>
+        <button type="button" role="tab" id="tab-records" aria-controls="panel-records" aria-selected="false" tabindex="-1">Records</button>
+    </div>
+
+    <div class="settings-panel" role="tabpanel" id="panel-course" aria-labelledby="tab-course">
+        <p>Opening Settings pauses the race. Changing the course starts a new run.</p>
+        <fieldset class="course-options"><legend>Driving settings</legend>
+            <label class="switch-line" for="traffic-enabled"><span>Traffic<small>Other vehicles and collisions</small></span><input id="traffic-enabled" type="checkbox" role="switch"></label>
+            <label class="switch-line" for="curves-enabled"><span>Curved roads<small>Bends, cornering and drifting</small></span><input id="curves-enabled" type="checkbox" role="switch"></label>
+            <label class="switch-line" for="race-enabled"><span>Race<small>Three rivals · finish line · local leaderboard</small></span><input id="race-enabled" type="checkbox" role="switch"></label>
+            <div class="settings-grid">
+                <label class="reference-choice" for="control-mode">Controls<select id="control-mode" onchange="setControlMode(this.value)"><option value="voice">Voice · rev with your voice</option><option value="manual">Manual · auto throttle, CLUTCH + ▲ ▼ to shift</option></select></label>
+                <label class="reference-choice" for="steering-mode">Steering<select id="steering-mode"><option value="easy">Easy · curves auto, one lane per tap</option><option value="normal" selected>Normal · curves auto, free steering</option><option value="hard">Hard · you steer the curves</option></select></label>
+                <label class="reference-choice" for="difficulty">Local difficulty<select id="difficulty"><option value="easy">Easy</option><option value="normal" selected>Normal</option><option value="hard">Hard</option></select></label>
+                <label class="reference-choice" for="race-distance">Race distance<select id="race-distance"><option value="1000">1 km</option><option value="3000">3 km</option><option value="5000">5 km</option></select></label>
+            </div>
+            <output id="course-label" aria-live="polite">Plain road</output>
+            <small>Steer: A / D · Drift: hold Q / E or the drift buttons. Drift starts above 25 km/h. N = neutral ↔ drive · Space = brake.</small>
+        </fieldset>
+        <fieldset class="course-options"><legend>Phone sounds</legend>
+            <label class="switch-line" for="sfx-enabled"><span>Car sound effects<small>Turbo whistle, blow-off, pops and bangs from your Garage parts. Your voice stays the engine.</small></span><input id="sfx-enabled" type="checkbox" role="switch" checked></label>
+            <div class="slider-row"><label for="sfx-volume">Effects volume</label><input id="sfx-volume" type="range" min="0" max="100" value="70"></div>
+            <label class="switch-line" for="engine-enabled"><span>Engine sound<small id="engine-note">Your car's own engine (layout, parts and RPM) plays with your voice. Needs "Ignore game sounds" on, so the microphone hears only you.</small></span><input id="engine-enabled" type="checkbox" role="switch" checked></label>
+            <div class="slider-row"><label for="engine-volume">Engine volume</label><input id="engine-volume" type="range" min="0" max="100" value="60"></div>
+        </fieldset>
+        <p class="settings-note"><b>Shift timing:</b> Voice cuts work from 7,000 RPM. Below 8,500: Early · 8,500–9,500: Perfect · above 9,500: Late. Holding the 10k marker for more than 3 seconds causes engine failure. Shift, brake or release the throttle to recover before then.</p>
+        <p class="settings-note"><b>Driving:</b> a short break in your rev shifts up; one small rev shifts down. When the car slows to the bottom of a gear, it shifts down by itself. Holding a gear at the redline cuts power, and more than 3 seconds at 10k blows the engine. Tap <b>N ↔ D</b> any time for neutral; tap again to drive in a gear that suits the speed. More than 3 seconds of silence selects neutral automatically. RPM and gears are estimates.</p>
+    </div>
+
+    <div class="settings-panel" role="tabpanel" id="panel-input" aria-labelledby="tab-input" hidden>
+        <div class="input-choice" role="group" aria-label="Input source">
+            <button id="use-mic" type="button" onclick="toggleMicrophone()" class="rl-btn rl-btn--yellow rl-btn--small" aria-pressed="false">Microphone</button>
+            <button id="use-recording" type="button" onclick="toggleReference()" class="rl-btn rl-btn--dark rl-btn--small" aria-pressed="false">Recording</button>
+        </div>
+        <p>Tap Microphone again to turn it off. Recording plays or pauses the sound test.</p>
+        <div id="test-status" role="status" aria-live="polite">Choose Microphone for live voice driving, or Recording for the sound test.</div>
+        <label class="switch-line" for="echo-cancel"><span>Ignore game sounds<small>Echo cancellation, like a video call: the microphone keeps your voice and removes the phone's own race sounds. Turn off to use the original raw input.</small></span><input id="echo-cancel" type="checkbox" role="switch" checked></label>
+        <label class="reference-choice" for="reference-source">Reference recording
+            <select id="reference-source"><option value="custom">My rev · IMG_3313</option><option value="downshift">Downshift trial · IMG_3314</option><option value="porsche">Porsche Carrera GT</option><option value="upload" disabled hidden>Loaded file</option></select>
+        </label>
+        <video id="reference-video" class="audio-reference" poster="assets/rev-voice-3313-wave.png" src="assets/rev-voice-3313.m4a" controls playsinline preload="metadata" aria-label="IMG_3313 rev recording"></video>
+        <div class="test-actions">
+            <button id="play-reference" type="button" onclick="toggleReference()" class="rl-btn rl-btn--green rl-btn--small">Play sound test</button>
+            <button id="replay-reference" type="button" onclick="playReference(true)" class="rl-btn rl-btn--dark rl-btn--small">Replay from start</button>
+            <label class="file-label">Load another video<input id="reference-file" type="file" accept="video/*,audio/*"></label>
+        </div>
+        <div class="check-row">
+            <label><input type="checkbox" id="loop-reference" checked> Loop test</label>
+        </div>
+    </div>
+
+    <div class="settings-panel" role="tabpanel" id="panel-tuning" aria-labelledby="tab-tuning" hidden>
+        <div id="top-hud">
+            <div class="readings">
+                <div><span>Score</span><b id="score" class="hud-val">0</b></div>
+                <div><span>Throttle press</span><b id="press-pct" class="hud-val">0%</b></div>
+                <div><span>Input band</span><b id="pitch-hz" class="hud-val">0 Hz</b></div>
+            </div>
+            <div class="slider-row">
+                <label for="sens-slider">Input sensitivity: <span id="sens-val">2.0</span>x</label>
+                <input type="range" id="sens-slider" min="8" max="45" value="20">
+            </div>
+            <div class="slider-row">
+                <label for="gate-slider">Noise gate: <span id="gate-val">0.8</span>%</label>
+                <input type="range" id="gate-slider" min="0" max="10" step="0.1" value="0.8">
+            </div>
+        </div>
+        <div class="settings-grid">
+            <label for="input-profile" class="reference-choice">Sound profile
+                <select id="input-profile"><option value="engine">Carrera GT engine / V10</option><option value="voice">Voice / standard</option><option value="voice-custom" selected>My rev · IMG_3313</option></select>
+            </label>
+            <label id="engine-calibration" for="rpm-scale" class="reference-choice" hidden>RPM calibration · <output id="rpm-scale-val">12.5</output> RPM/Hz
+                <input id="rpm-scale" type="range" min="6" max="30" step="0.5" value="12.5">
+            </label>
+            <div id="voice-range">Matched voice pitch<strong id="voice-range-val">150–300 Hz</strong></div>
+        </div>
+        <label class="switch-line" for="voice-blend"><span>Pitch + volume mix<small>Trial · Off = previous control. Switching starts a new run.</small></span><input id="voice-blend" type="checkbox" role="switch" checked></label>
+        <div class="check-row">
+            <label><input type="checkbox" id="voice-ai" checked> AI voice pitch</label>
+            <label><input type="checkbox" id="voice-downshift" checked> Voice downshift</label>
+        </div>
+        <output id="voice-ai-status" role="status" aria-live="polite">AI voice pitch is available in Voice mode. Porsche engine detector stays standard.</output>
+        <div class="telemetry" aria-label="Estimated app telemetry">
+            <div><span>EST. RPM</span><output id="test-rpm">1,000</output></div>
+            <div><span>EST. GEAR</span><output id="test-gear">N</output></div>
+            <div><span>EST. KM/H</span><output id="test-speed">0</output></div>
+        </div>
+        <output id="signal-state">Input: none · Waiting for playback</output>
+        <div class="test-actions"><button id="export-test" type="button" class="rl-btn rl-btn--dark rl-btn--small" disabled>Export run CSV</button></div>
+    </div>
+
+    <div class="settings-panel" role="tabpanel" id="panel-records" aria-labelledby="tab-records" hidden>
+        <table id="leaderboard"><caption>Local leaderboard · this course</caption><thead><tr><th scope="col">#</th><th scope="col">Place</th><th scope="col">Time</th><th scope="col">Score</th></tr></thead><tbody id="leaderboard-rows"></tbody></table>
+        <p id="leaderboard-note">Complete a race to save your result on this device.</p>
+    </div>
+</section>
+</dialog>
+
+<main id="stage">
+    <canvas id="race-view" aria-label="Race track, top-down view" role="img"></canvas>
+
+    <div id="hud" class="hud">
+        <div class="hud-top">
+            <div class="hud-box hud-left" aria-hidden="true">
+                <div class="hud-row"><span class="rl-label" id="hud-a-label">POS</span><span class="rl-value" id="hud-a">1 / 4</span></div>
+                <div class="hud-row"><span class="rl-label" id="hud-b-label">KM</span><span class="rl-value" id="hud-b">0.00 / 1</span></div>
+            </div>
+            <button id="settings-button" type="button" class="hud-pause" onclick="openSettings()" aria-haspopup="dialog" aria-controls="settings-dialog" aria-label="Pause and settings">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.5"/><rect x="14" y="5" width="4" height="14" rx="1.5"/></svg>
+            </button>
+            <div class="hud-box hud-right" aria-hidden="true">
+                <div class="hud-row"><span class="rl-label">SCORE</span><span class="rl-value" id="hud-score">0</span></div>
+                <div class="hud-row"><span class="rl-label">TIME</span><span class="rl-value" id="hud-time">0:00.00</span></div>
+            </div>
+        </div>
+        <div id="hud-lights" class="hud-lights" aria-hidden="true">
+            <i class="lamp"></i><i class="lamp"></i><i class="lamp"></i><i class="lamp"></i><i class="lamp"></i>
+            <span id="hud-chevrons" class="chevrons" data-grade="off">▲▲</span>
+        </div>
+        <ol id="hud-rivals" class="hud-rivals" aria-label="Standings"></ol>
+        <div id="hud-banner" class="hud-banner" role="status" hidden></div>
+        <div id="gear-alert" role="status" aria-live="polite" aria-atomic="true"></div>
+        <div class="hud-map" aria-hidden="true"><canvas id="hud-map"></canvas></div>
+        <div class="hud-gauge"><canvas id="hud-gauge" role="img" aria-label="RPM and speed meter"></canvas></div>
+    </div>
+
+    <div id="control-deck" role="group" aria-label="Driving controls">
+        <div class="pad pad-left">
+            <!-- Manual controls: hold CLUTCH with one thumb, shift with the other. -->
+            <button type="button" class="ctl ctl-clutch manual-only" id="btn-clutch" aria-pressed="false" title="Hold to press the clutch (C)">Clutch</button>
+            <div class="pad-row">
+                <button type="button" class="ctl ctl-steer" id="btn-left" onclick="nudgeCar(-1)" aria-label="Steer left" title="Steer left (A / Left Arrow)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+                <button type="button" class="ctl ctl-steer" id="btn-right" onclick="nudgeCar(1)" aria-label="Steer right" title="Steer right (D / Right Arrow)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+            </div>
+            <div class="pad-row" role="group" aria-label="Drift controls">
+                <button type="button" class="ctl ctl-drift" id="btn-drift-left" onclick="tapDrift(-1, event)" aria-label="Drift left" aria-pressed="false" title="Hold to drift left (Q)">Drift L</button>
+                <button type="button" class="ctl ctl-drift" id="btn-drift-right" onclick="tapDrift(1, event)" aria-label="Drift right" aria-pressed="false" title="Hold to drift right (E)">Drift R</button>
+            </div>
+        </div>
+        <div class="pad pad-right">
+            <div class="neutral-wrap">
+                <button type="button" id="gear-lcd-circle" class="ctl ctl-gear" onclick="toggleNeutral()" aria-label="Neutral / drive" aria-pressed="true" title="Neutral / suitable driving gear (N)">N</button>
+                <span>N ↔ D</span>
+            </div>
+            <div class="shift-stack manual-only" role="group" aria-label="Gear shift">
+                <button type="button" class="ctl ctl-shift" id="btn-shift-up" aria-label="Shift up" title="Shift up: hold CLUTCH, then tap (W / Up Arrow)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
+                <button type="button" class="ctl ctl-shift" id="btn-shift-down" aria-label="Shift down" title="Shift down: hold CLUTCH, then tap (S / Down Arrow)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+            </div>
+            <button type="button" id="btn-brake" class="ctl ctl-brake" onclick="car.speedKmh = Math.max(0, car.speedKmh - 3)" title="Brake / stop (Spacebar)">Brake</button>
+        </div>
+    </div>
+
+    <div id="overlay"></div>
+    <div id="countdown" class="countdown" aria-live="assertive" hidden></div>
+
+    <!-- Elements the backend writes to every frame; kept for game.js, not shown. -->
+    <div id="engine-room" hidden aria-hidden="true">
+        <canvas id="gameCanvas" width="540" height="900"></canvas>
+        <canvas id="tachoCanvas" width="210" height="195"></canvas>
+        <canvas id="speedoCanvas" width="160" height="160"></canvas>
+        <div id="race-hud"><strong id="race-position"></strong><span id="race-distance-label"></span><div id="race-progress-track"><div id="race-progress"></div><i class="rival-dot"></i><i class="rival-dot"></i><i class="rival-dot"></i></div><span id="rival-gaps"></span></div>
+        <output id="voice-level">0%</output><div id="voice-fill"></div>
+        <span id="race-menu-detail"></span>
+        <audio id="garage-audio" preload="none"></audio>
+    </div>
+</main>
+
+<!-- Backend (unchanged root files) -->
+<script src="frontend/shared/no-zoom.js"></script>
+    <script src="voice-input.js"></script>
+<script src="driving-feedback.js"></script>
+<script src="exhaust-feedback.js"></script>
+<script src="driving-scene.js"></script>
+<script src="garage.js"></script>
+<!-- Frontend -->
+<script src="driving-course.js"></script>
+<script src="frontend/garage/parts-catalog.js"></script>
+<script src="frontend/shared/economy.js"></script>
+<script src="frontend/career/career-data.js"></script>
+<script src="frontend/shared/tuning-store.js"></script>
+<script src="frontend/shared/career-store.js"></script>
+<script src="frontend/shared/car-art.js"></script>
+<script src="frontend/race/menu-bridge.js"></script>
+<script src="game.js"></script>
+<script src="frontend/shared/profile-store.js"></script>
+<script src="frontend/shared/net.js"></script>
+<script src="frontend/shared/lobby.js"></script>
+<script src="frontend/race/mp-race.js"></script>
+<script src="frontend/race/engine-sound.js"></script>
+<script src="frontend/race/race-sfx.js"></script>
+<script src="frontend/race/track-renderer.js"></script>
+<script src="frontend/race/hud.js"></script>
+<script src="frontend/race/race-ui.js"></script>
+</body>
+</html>

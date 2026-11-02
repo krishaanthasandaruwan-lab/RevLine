@@ -1,0 +1,20 @@
+{
+  "source": "IMG_3313.MOV",
+  "durationSeconds": 29.295,
+  "audioAsset": "rev-voice-3313.m4a",
+  "audioSha256": "9e4498da128425dde321d393297552f036375bb48a4f32f6378588c2294519b2",
+  "analyzedFrames": 580,
+  "clearVoicedFrames": 536,
+  "pitchHzPercentiles": {
+    "p05": 156.0073,
+    "p50": 203.3606,
+    "p95": 287.0879
+  },
+  "recentRmsPercentiles": {
+    "p05": 0.0277,
+    "p50": 0.0694,
+    "p95": 0.1762
+  },
+  "runtimePreset": "voice-preset.js",
+  "method": "CREPE pitch and 45 Hz high-pass audio analysis. Control mapping calibrated; neural weights unchanged. No target RPM labels or accuracy percentage."
+}

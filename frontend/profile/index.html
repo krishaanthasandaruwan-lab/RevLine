@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <base href="../../">
+    <title>RevLine · Profile</title>
+    <link rel="icon" href="data:,">
+    <link rel="preload" href="frontend/shared/fonts/LilitaOne-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="frontend/shared/fonts/Teko-Variable.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="frontend/shared/theme.css">
+    <link rel="stylesheet" href="frontend/profile/profile.css">
+</head>
+<body class="profile-page">
+    <header class="pf-top">
+        <a class="rl-btn rl-btn--dark rl-btn--small pf-back" id="pf-back" href="frontend/index.html" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></a>
+        <h1 class="rl-title">Profile</h1>
+    </header>
+    <main class="pf-main">
+        <section class="pf-card rl-panel">
+            <div class="pf-photo" id="pf-photo"></div>
+            <div class="pf-photo-actions">
+                <label class="rl-btn rl-btn--yellow rl-btn--small" for="pf-file">Choose photo</label>
+                <input type="file" id="pf-file" accept="image/*" hidden>
+                <button type="button" class="rl-btn rl-btn--dark rl-btn--small" id="pf-gc-photo" hidden>Game Center photo</button>
+                <button type="button" class="rl-btn rl-btn--dark rl-btn--small" id="pf-colour">New colour</button>
+                <button type="button" class="rl-btn rl-btn--dark rl-btn--small" id="pf-remove" hidden>Remove photo</button>
+            </div>
+        </section>
+        <form class="pf-card rl-panel pf-form" id="pf-form">
+            <label class="pf-field"><span class="rl-label">Name</span><input id="pf-name" maxlength="20" autocomplete="nickname" required></label>
+            <label class="pf-field"><span class="rl-label">Country</span><select id="pf-country"></select></label>
+            <label class="pf-field"><span class="rl-label">Bio <small id="pf-bio-count">0 / 150</small></span>
+                <textarea id="pf-bio" maxlength="150" rows="3" placeholder="Favourite car, best shift, rotary forever…"></textarea></label>
+            <button type="submit" class="rl-btn rl-btn--green">Save profile</button>
+            <output id="pf-status" class="pf-status" role="status"></output>
+        </form>
+        <section class="pf-card rl-panel">
+            <h2>Stats</h2>
+            <dl class="pf-stats" id="pf-stats"></dl>
+            <p class="pf-note" id="pf-gc"></p>
+        </section>
+    </main>
+    <script src="frontend/shared/no-zoom.js"></script>
+    <script src="garage.js"></script>
+    <script src="frontend/garage/parts-catalog.js"></script>
+    <script src="frontend/shared/tuning-store.js"></script>
+    <script src="frontend/shared/economy.js"></script>
+    <script src="frontend/career/career-data.js"></script>
+    <script src="frontend/shared/career-store.js"></script>
+    <script src="frontend/shared/profile-store.js"></script>
+    <script src="frontend/shared/net.js"></script>
+    <script src="frontend/profile/profile-ui.js"></script>
+</body>
+</html>

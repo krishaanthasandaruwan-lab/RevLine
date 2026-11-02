@@ -1,0 +1,163 @@
+/* Garage page. Tokens come from frontend/shared/theme.css. */
+body.garage-page {
+    min-height: 100dvh;
+    padding: calc(12px + var(--rl-safe-top)) 14px calc(70px + var(--rl-safe-bottom));
+    background:
+        radial-gradient(circle at 20% 0%, rgba(255, 138, 31, .18), transparent 45%),
+        radial-gradient(circle at 90% 10%, rgba(47, 140, 255, .2), transparent 45%),
+        repeating-linear-gradient(45deg, #0d1628 0 22px, #0b1323 22px 44px);
+}
+.g-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 1240px; margin: 0 auto 14px; }
+.g-top .rl-title { font-size: clamp(30px, 6vw, 44px); transform: rotate(-2deg); }
+.g-main {
+    display: grid; gap: 16px; max-width: 1240px; margin: 0 auto;
+    grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 920px) {
+    .g-main { grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); grid-template-areas: "bay tuner" "sound tuner"; }
+    .g-bay { grid-area: bay; } .g-tuner { grid-area: tuner; } .g-sound { grid-area: sound; }
+    .g-tuner { max-height: calc(100dvh - 110px); position: sticky; top: 12px; display: flex; flex-direction: column; }
+    .g-parts { overflow-y: auto; }
+}
+
+/* ---------- Bay ---------- */
+.g-bay { padding: 10px; overflow: hidden; }
+#bay-canvas { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 14px; border: 3px solid var(--rl-ink); background: #1b2638; }
+.bay-info { display: flex; align-items: center; gap: 10px; margin: 12px 4px 8px; }
+.bay-title { flex: 1; min-width: 0; text-align: center; }
+.bay-title h2 { margin: 0; font: 30px/1.05 var(--rl-font-display); letter-spacing: .02em; text-shadow: 0 3px 0 var(--rl-ink); }
+.bay-title p { margin: 4px 0 0; color: var(--rl-muted); font-size: 13.5px; }
+.bay-title b { color: var(--rl-yellow); font: italic 600 19px var(--rl-font-hud); }
+.pager {
+    flex: none; width: 48px; height: 48px; border-radius: 50%;
+    border: 3px solid var(--rl-ink); background: linear-gradient(180deg, #3a5384, #24375a 55%);
+    color: #fff; font: 30px/1 var(--rl-font-display);
+    box-shadow: 0 4px 0 #101b30, 0 6px 0 var(--rl-ink); transition: transform .08s;
+}
+.pager:active { transform: translateY(4px); box-shadow: 0 0 0 #101b30, 0 2px 0 var(--rl-ink); }
+.pager:disabled { opacity: .35; cursor: default; }
+.build-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 0 0 12px; padding: 0; list-style: none; }
+.build-chips li {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 10px 5px 7px; border-radius: 999px;
+    background: rgba(255, 255, 255, .07); border: 1.5px solid rgba(255, 255, 255, .14);
+    font-size: 12.5px; font-weight: 600;
+}
+.build-chips svg { width: 17px; height: 17px; color: var(--cat, var(--rl-yellow)); }
+.bay-actions { display: flex; gap: 10px; }
+.bay-actions .rl-btn { flex: 1; }
+#hear-build { min-height: 56px; font-size: clamp(17px, 4.6vw, 22px); white-space: nowrap; }
+.bay-actions #hear-stock { flex: .7; }
+.rl-btn[aria-pressed="true"] { --btn-bg: var(--rl-red); --btn-top: #ff8189; --btn-edge: var(--rl-red-edge); }
+
+/* Category colours */
+[data-category="cars"] { --cat: var(--rl-yellow); }
+[data-category="engine"] { --cat: var(--rl-red); }
+[data-category="exhaust"] { --cat: var(--rl-orange); }
+[data-category="turbo"] { --cat: var(--rl-cyan); }
+[data-category="bov"] { --cat: var(--rl-purple); }
+[data-category="intake"] { --cat: var(--rl-green); }
+
+/* ---------- Tuner ---------- */
+.g-tuner { padding: 12px; }
+.g-tabs { position: relative; display: flex; gap: 6px; overflow-x: auto; padding: 2px 2px 10px; margin-bottom: 4px; scrollbar-width: none; }
+.g-tabs::-webkit-scrollbar { display: none; }
+.g-tabs [role="tab"] {
+    flex: none; display: inline-flex; align-items: center; gap: 7px; min-height: 46px; padding: 8px 13px;
+    border: 2.5px solid transparent; border-radius: 14px; background: rgba(255, 255, 255, .06);
+    color: var(--rl-muted); font: 16px var(--rl-font-display); letter-spacing: .02em;
+    transition: background-color .15s, color .15s;
+}
+.g-tabs [role="tab"] svg { width: 20px; height: 20px; color: var(--cat); }
+.g-tabs [role="tab"]:hover { color: var(--rl-text); }
+.g-tabs [role="tab"][aria-selected="true"] { background: var(--cat); color: var(--rl-ink); border-color: var(--rl-ink); box-shadow: 0 4px 0 var(--rl-ink); }
+.g-tabs [role="tab"][aria-selected="true"] svg { color: var(--rl-ink); }
+.g-parts { display: grid; gap: 10px; padding: 2px; }
+.part {
+    display: grid; grid-template-columns: 76px minmax(0, 1fr); grid-template-areas: "thumb body" "actions actions";
+    gap: 10px 12px; padding: 12px;
+    border-radius: 16px; border: 2px solid rgba(255, 255, 255, .1);
+    background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .02));
+    animation: part-in .3s ease-out both;
+}
+.part:nth-child(2) { animation-delay: .04s; } .part:nth-child(3) { animation-delay: .08s; } .part:nth-child(4) { animation-delay: .12s; }
+.part:nth-child(5) { animation-delay: .16s; } .part:nth-child(n+6) { animation-delay: .2s; }
+@keyframes part-in { from { opacity: 0; transform: translateY(8px); } }
+.part[data-state="fitted"] { border-color: var(--cat); background: linear-gradient(180deg, color-mix(in srgb, var(--cat) 18%, transparent), rgba(255, 255, 255, .02)); }
+.part-thumb {
+    grid-area: thumb; display: grid; place-items: center;
+    width: 76px; height: 76px; border-radius: 18px; border: 2.5px solid var(--rl-ink);
+    background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--cat) 55%, white), var(--cat) 70%);
+    color: var(--rl-ink); box-shadow: 0 4px 0 var(--rl-ink);
+}
+.part-thumb svg { width: 42px; height: 42px; }
+.part-thumb canvas { width: 76px; height: 44px; }
+.part[data-category="cars"] { grid-template-columns: 96px minmax(0, 1fr); }
+.part[data-category="cars"] .part-thumb { position: relative; width: 96px; height: 128px; overflow: hidden; background: #2a1d44; padding: 0; }
+/* Archive artwork shows the engine above the car; zoom onto the car band (≈ 58–88% of the height). */
+.part[data-category="cars"] .part-thumb img { position: absolute; left: 50%; top: 100%; width: 170%; height: auto; transform: translate(-50%, -94%); display: block; }
+.car-swatch { position: absolute; right: 6px; bottom: 6px; width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid var(--rl-ink); }
+.part-body { grid-area: body; min-width: 0; }
+.part-body h3 { margin: 2px 0 4px; font: 20px/1.1 var(--rl-font-display); letter-spacing: .02em; }
+.part-body p { margin: 0 0 8px; color: var(--rl-muted); font-size: 13px; line-height: 1.45; }
+.part-tags { display: flex; flex-wrap: wrap; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.part-tags li { padding: 2px 8px; border-radius: 999px; background: rgba(0, 0, 0, .3); color: var(--cat); font: italic 600 15px/1.3 var(--rl-font-hud); letter-spacing: .04em; text-transform: uppercase; }
+.part-actions { grid-area: actions; display: flex; gap: 8px; }
+.part-actions .rl-btn { flex: 1; }
+.part[data-state="locked"] .part-thumb img { filter: saturate(.55) brightness(.8); }
+
+/* ---------- Sound sheet ---------- */
+.g-sound { padding: 14px 16px 16px; }
+.g-sound h2 { margin: 0 0 10px; font: 22px var(--rl-font-display); color: var(--rl-yellow); }
+#scope { display: block; width: 100%; height: 110px; border-radius: 14px; border: 2.5px solid var(--rl-ink); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px 18px; margin: 14px 0 10px; }
+.stat { display: grid; gap: 4px; }
+.stat dt { color: var(--rl-muted); font: italic 600 17px/1 var(--rl-font-hud); letter-spacing: .04em; text-transform: uppercase; }
+.stat dd { margin: 0; height: 14px; border-radius: 999px; background: rgba(0, 0, 0, .35); border: 2px solid var(--rl-ink); overflow: hidden; }
+.stat dd span {
+    display: block; height: 100%; width: 100%;
+    transform: scaleX(var(--value)); transform-origin: left;
+    background: linear-gradient(90deg, var(--rl-green), var(--rl-yellow) 70%, var(--rl-orange));
+    transition: transform .35s cubic-bezier(.2, 1.2, .4, 1);
+}
+.stat dd span[data-stat="tone"] { background: linear-gradient(90deg, #6a5cff, var(--rl-cyan) 60%, #fff); }
+.stat dd span[data-stat="whistle"] { background: linear-gradient(90deg, #2f8cff, var(--rl-cyan)); }
+.g-note { margin: 0; color: var(--rl-muted); font-size: 12.5px; line-height: 1.55; }
+
+.g-status {
+    position: fixed; left: 50%; bottom: calc(14px + var(--rl-safe-bottom)); transform: translateX(-50%);
+    max-width: calc(100vw - 28px); padding: 10px 16px;
+    border-radius: 14px; border: 2.5px solid var(--rl-ink);
+    background: var(--rl-panel-solid); color: var(--rl-text);
+    font-size: 13.5px; font-weight: 600; text-align: center;
+    box-shadow: 0 6px 0 var(--rl-ink), var(--rl-shadow);
+    z-index: 10;
+    transition: opacity .25s, transform .25s;
+}
+.g-status:not([data-visible="true"]) { opacity: 0; transform: translate(-50%, 12px); pointer-events: none; }
+
+/* Wallet (coins live in the backend garage, gems in the career store). */
+.g-wallet { display: flex; gap: 6px; margin-left: auto; }
+.g-wallet > span {
+    display: inline-flex; align-items: center; gap: 5px; min-height: 36px; padding: 3px 10px 3px 5px;
+    border: 2.5px solid var(--rl-ink); border-radius: 999px; background: rgba(8, 14, 26, .82); color: #fff;
+    font: italic 600 20px/1 var(--rl-font-hud); font-variant-numeric: tabular-nums;
+}
+.g-wallet i { width: 20px; height: 20px; flex: none; }
+.g-coin i { border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff3a8, #ffc928 55%, #c98a00); border: 2px solid var(--rl-ink); }
+.g-gem i { background: linear-gradient(135deg, #b8f3ff, #38e1ff 45%, #2f6fe0); clip-path: polygon(50% 0, 100% 35%, 50% 100%, 0 35%); }
+.part[data-category="meter"] .part-thumb svg { width: 56px; height: 56px; }
+@media (max-width: 560px) { .g-top .rl-title { display: none; } }
+/* Generated art (frontend/shared/art): portraits and item images fit the thumb instead of the archive crop. */
+.part[data-category="cars"] .part-thumb.has-portrait { background: radial-gradient(circle at 50% 40%, #4a3a78, #2a1d44 70%); }
+.part[data-category="cars"] .part-thumb.has-portrait img { inset: 6px; top: 6px; width: calc(100% - 12px); height: calc(100% - 12px); object-fit: contain; transform: none; }
+.part-thumb > img:only-child { width: 88%; height: 88%; object-fit: contain; }
+
+/* Small phones: the header keeps Home, wallet and Race on one line. */
+@media (max-width: 380px) {
+    .g-top { gap: 6px; }
+    .g-top .rl-btn--small { padding: 6px 9px; font-size: 14px; }
+    .g-wallet > span { font-size: 17px; padding: 2px 8px 2px 4px; }
+    .g-wallet i { width: 16px; height: 16px; }
+}
+@media (max-width: 340px) { .g-top > a:first-child { font-size: 0; gap: 0; } .g-top > a:first-child svg { width: 20px; height: 20px; } }

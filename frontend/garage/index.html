@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- Relative URLs resolve from the project root (backend scripts and assets/engines). -->
+    <base href="../../">
+    <title>RevLine · Garage</title>
+    <link rel="icon" href="data:,">
+    <link rel="preload" href="frontend/shared/fonts/LilitaOne-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="frontend/shared/fonts/Teko-Variable.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="frontend/shared/theme.css">
+    <link rel="stylesheet" href="frontend/garage/garage.css">
+</head>
+<body class="garage-page">
+    <header class="g-top">
+        <a class="rl-btn rl-btn--dark rl-btn--small" href="frontend/index.html" aria-label="Back to home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>Home</a>
+        <h1 class="rl-title">Garage</h1>
+        <div class="g-wallet" aria-label="Your wallet">
+            <span class="g-coin" title="Coins"><i aria-hidden="true"></i><b id="w-coins">0</b><span class="rl-sr-only">coins</span></span>
+            <span class="g-gem" title="Gems"><i aria-hidden="true"></i><b id="w-gems">0</b><span class="rl-sr-only">gems</span></span>
+        </div>
+        <a class="rl-btn rl-btn--yellow rl-btn--small" href="frontend/race/index.html?mode=race">Race
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></a>
+    </header>
+
+    <main class="g-main">
+        <section class="g-bay rl-panel" aria-labelledby="car-name">
+            <canvas id="bay-canvas" aria-hidden="true"></canvas>
+            <div class="bay-info">
+                <button type="button" id="car-prev" class="pager" aria-label="Previous car in your garage">‹</button>
+                <div class="bay-title">
+                    <h2 id="car-name">Carrera GT</h2>
+                    <p><span id="car-engine"></span> · Race power <b id="power">×1.00</b></p>
+                </div>
+                <button type="button" id="car-next" class="pager" aria-label="Next car in your garage">›</button>
+            </div>
+            <ul id="build-chips" class="build-chips" aria-label="Fitted parts"></ul>
+            <div class="bay-actions">
+                <button type="button" id="hear-stock" class="rl-btn rl-btn--dark rl-btn--small" aria-pressed="false"><span>Hear stock</span></button>
+                <button type="button" id="hear-build" class="rl-btn rl-btn--green" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><span>Hear my build</span></button>
+            </div>
+        </section>
+
+        <section class="g-tuner rl-panel" aria-label="Parts">
+            <div id="g-tabs" class="g-tabs" role="tablist" aria-label="Part categories"></div>
+            <div id="g-parts" class="g-parts" role="tabpanel"></div>
+        </section>
+
+        <section class="g-sound rl-panel" aria-labelledby="stats-title">
+            <h2 id="stats-title">Your build</h2>
+            <canvas id="scope" aria-hidden="true"></canvas>
+            <dl id="stats" class="stats"></dl>
+            <p class="g-note">Car, engine and turbo are used in races (turbo = +12% acceleration). Exhaust, blow-off and intake shape the garage sound preview; race physics are unchanged for now. Prices follow how much players love a sound, not speed: win races to earn coins.</p>
+        </section>
+    </main>
+    <output id="g-status" class="g-status" role="status" aria-live="polite"></output>
+
+    <script src="frontend/shared/no-zoom.js"></script>
+    <script src="garage.js"></script>
+    <script src="frontend/garage/parts-catalog.js"></script>
+    <script src="frontend/shared/tuning-store.js"></script>
+    <script src="frontend/shared/economy.js"></script>
+    <script src="frontend/career/career-data.js"></script>
+    <script src="frontend/shared/career-store.js"></script>
+    <script src="frontend/shared/car-art.js"></script>
+    <script src="frontend/garage/sound-lab.js"></script>
+    <script src="frontend/garage/garage-ui.js"></script>
+</body>
+</html>

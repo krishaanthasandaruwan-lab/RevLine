@@ -1,0 +1,21 @@
+{
+  "profile": "product-admin",
+  "sourceRoots": [
+    "."
+  ],
+  "locale": "si-LK",
+  "canonicalMap": "DESIGN.md",
+  "requiredCapabilities": [
+    "Select/Listbox",
+    "Scrollbar"
+  ],
+  "ownership": {
+    "Select/Listbox": "native"
+  },
+  "requiredCommands": [
+    "unit"
+  ],
+  "commands": {
+    "unit": "node tests/microphone-startup.test.cjs && node tests/audio-model.test.cjs && node tests/voice-ai.test.cjs && node tests/custom-voice.test.cjs && node tests/downshift-trial.test.cjs && node tests/driving-feedback.test.cjs && node tests/exhaust-feedback.test.cjs && node tests/driving-scene.test.cjs && node tests/garage-options.test.cjs && node tests/voice-input.test.cjs && node tests/voice-blend.test.cjs && node tests/shift-window.test.cjs && node tests/soft-downshift.test.cjs && node tests/recorded-downshift.test.cjs && node tests/voice-setup.test.cjs && node tests/direction-guard.test.cjs && node tests/speed-gearbox.test.cjs && node tests/game-rules.test.cjs && node tests/career.test.cjs && node tests/engine-sound.test.cjs && node tests/multiplayer.test.cjs && node tests/manual-controls.test.cjs && python3 scripts/stage-ios-web.py --check-voice-lock"
+  }
+}

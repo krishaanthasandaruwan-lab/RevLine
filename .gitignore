@@ -1,0 +1,32 @@
+ios/build/
+ios/**/xcuserdata/
+ios/**/*.xcuserstate
+__pycache__/
+
+# macOS
+.DS_Store
+
+# Large media — too big for GitHub
+*.MOV
+*.mov
+
+# Downloaded TikTok videos
+michael.gaming92/
+
+# Checkpoints (local restore points)
+.checkpoints/
+
+# Backup folder (map projects etc.)
+_backup/
+
+# Sri Lanka map folders (not part of the game)
+sri-lanka-map*/
+
+# Impeccable cache
+.impeccable/
+
+# Node
+node_modules/
+
+# Download script
+download_tiktok.py
